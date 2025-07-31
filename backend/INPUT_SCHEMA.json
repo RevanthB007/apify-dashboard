@@ -1,0 +1,15 @@
+{
+    "title": "Adding Actor input",
+    "description": "Add all values in list of numbers with an arbitrary length.",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "numbers": {
+            "title": "Number list",
+            "description": "The list of numbers to add up.",
+            "type": "array",
+            "editor": "json"
+        }
+    },
+    "required": ["numbers"]
+}
