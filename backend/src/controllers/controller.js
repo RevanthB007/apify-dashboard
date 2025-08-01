@@ -1,31 +1,35 @@
 import axios from "axios";
-import apifyClient from "../apify/apify.js";
+import { ApifyClient } from "apify-client";
 import dotenv from "dotenv";
 dotenv.config();
 
 // const apifyClient = new ApifyClient({ token: req.apifyToken });
 
 export const login = async (req, res) => {
-  try{
-  const response = await axios.get("https://api.apify.com/v2/me", {
-    headers: {
-      Authorization: `Bearer ${req.headers.authorization}`,
-    },
-  });
-  console.log("Login successful:", response.data);
-  return res.status(200).json({ message: "Login successful"});
-}
-catch(error){
-  console.error("Error during login:", error);
-  return res.status(401).json({ message: "Invalid API Key" });
-}
+
+  const { apitoken } = req.params
+
+  try {
+    const response = await axios.get("https://api.apify.com/v2/me", {
+      headers: {
+        Authorization: `Bearer ${apitoken}`,
+      },
+    });
+    console.log("Login successful:", response.data);
+    return res.status(200).json({ message: "Login successful" });
+  }
+  catch (error) {
+    console.error("Error during login:", error);
+    return res.status(401).json({ message: "Invalid API Key" });
+  }
 
 
-  
+
 }
 export const getActors = async (req, res) => {
   try {
-    const actorCollectionClient = apifyClient.actors();
+    const client = new ApifyClient({ token: req.apifyToken });
+    const actorCollectionClient = client.actors();
     const actors = await actorCollectionClient.list();
     console.log("Actors fetched successfully:", actors);
     res.status(200).json(actors);
@@ -38,13 +42,13 @@ export const getActors = async (req, res) => {
 
 // export const getActors = async (req, res) => {
 //   try {
-//     if(!process.env.APIFY_API_TOKEN) {
+//     if(!req.apifyToken) {
 //       console.error("APIFY_API_TOKEN is not set");
 //       return res.status(500).json({ error: "Server configuration error" });
 //     }
 
 //     const queryParams = new URLSearchParams({
-//       token: process.env.APIFY_API_TOKEN,
+//       token: req.apifyToken,
 //       my:1
 //     });
 //     console.log("fetching actors")
@@ -56,7 +60,7 @@ export const getActors = async (req, res) => {
 //     console.error("Error fetching actors:", error.message || error);
 //     res.status(500).json({ error: "Internal Server Error" });
 //   }
-  
+
 // }
 
 
@@ -80,13 +84,13 @@ export const runActor = async (req, res) => {
     console.log("Request body:", JSON.stringify(input, null, 2));
 
     // Validate environment variable
-    if (!process.env.APIFY_API_TOKEN) {
+    if (!req.apifyToken) {
       console.error("APIFY_API_TOKEN is not set");
       return res.status(500).json({ error: "Server configuration error" });
     }
 
     const run = await axios.post(
-      `https://api.apify.com/v2/acts/${actorId}/runs?token=${process.env.APIFY_API_TOKEN}`,
+      `https://api.apify.com/v2/acts/${actorId}/runs?token=${req.apifyToken}`,
       input,
       {
         headers: {
@@ -127,7 +131,7 @@ export const getRunResult = async (req, res) => {
   try {
     // Get the latest successful run using the /last endpoint
     const runResult = await axios.get(
-      `https://api.apify.com/v2/acts/${actorId}/runs/last?token=${process.env.APIFY_API_TOKEN}&status=SUCCEEDED`
+      `https://api.apify.com/v2/acts/${actorId}/runs/last?token=${req.apifyToken}&status=SUCCEEDED`
     );
 
     console.log("Latest successful run fetched:", runResult.data);
@@ -149,7 +153,7 @@ export const getActorSchema = async (req, res) => {
 
   try {
     const inputSchema = await axios.get(
-      `https://api.apify.com/v2/key-value-stores/2U05nMFEv8AnXSDCf/records/INPUT?token=${process.env.APIFY_API_TOKEN}`
+      `https://api.apify.com/v2/key-value-stores/2U05nMFEv8AnXSDCf/records/INPUT?token=${req.apifyToken}`
     );
 
     console.log("Input schema fetched successfully:", inputSchema);
@@ -175,7 +179,8 @@ export const findActorById = async (req, res) => {
       .json({ error: "Missing actorId in request parameters." });
   }
   try {
-    const actor = await apifyClient.actor(actorId).get();
+    const client = new ApifyClient({ token: req.apifyToken });
+    const actor = await client.actor(actorId).get();
     console.log("Actor found:", actor);
     res.status(200).json(actor);
   } catch (error) {
@@ -188,7 +193,7 @@ export const findActorById = async (req, res) => {
 export const getRuns = async (req, res) => {
   const { actorId } = req.params; // Fixed: removed .actorId
   console.log("Fetching runs for actor ID:", actorId);
-  
+
   if (!actorId) {
     return res
       .status(400)
@@ -197,7 +202,7 @@ export const getRuns = async (req, res) => {
 
   try {
     const runs = await axios.get(
-      `https://api.apify.com/v2/acts/${actorId}/runs?token=${process.env.APIFY_API_TOKEN}` // Fixed: using dynamic actorId
+      `https://api.apify.com/v2/acts/${actorId}/runs?token=${req.apifyToken}` // Fixed: using dynamic actorId
     );
 
     console.log("Runs fetched successfully:", runs.data);

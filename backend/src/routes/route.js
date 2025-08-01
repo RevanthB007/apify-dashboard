@@ -3,17 +3,15 @@ import { getActors, runActor,getRunResult,getActorSchema,findActorById,getRuns ,
 import { authTokenMiddleware } from '../middlewares/middleware.js';
 const router = express.Router();
 
-router.get("/actors",getActors);
-router.get("/actors/:actorId",findActorById);
+router.get("/actors", authTokenMiddleware, getActors);
+router.get("/actors/:actorId", authTokenMiddleware, findActorById);
+router.get("/actors/schema/:actorId", authTokenMiddleware, getActorSchema);
+router.post("/actors/run/:actorId", authTokenMiddleware, runActor);
+router.get("/runs/result/:actorId", authTokenMiddleware, getRunResult);
+router.get("/runs/results/:actorId", authTokenMiddleware, getRuns);
 
-router.get("/actors/schema/:actorId",  getActorSchema);
 
-router.post("/actors/run/:actorId",runActor); //to run an actor
-router.get("/runs/result/:actorId",getRunResult); //to get the result of a run
-
-router.get("/runs/results/:actorId",getRuns); //to get all runs of an actor
-
-router.post("/login", login)
+router.post("/login/:apitoken", login)
 
 
 export default router

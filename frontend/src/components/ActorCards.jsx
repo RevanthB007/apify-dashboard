@@ -5,7 +5,7 @@ import { useStore } from "../store/store.js";
 import ActorInputForm from "./ActorInputForm.jsx";
 
 const ActorCards = ({ actors }) => {
-  console.log("Actors in ActorCards:", actors);
+  // console.log("Actors in ActorCards:", actors);
   const { fetchInputParams, inputParams, loading, getRunResult, result, getLatestResult } = useStore();
   const [showForm, setShowForm] = useState(false);
   const [selectedActor, setSelectedActor] = useState(null);
@@ -15,7 +15,7 @@ const ActorCards = ({ actors }) => {
   
   // Handle the case where actors might be the full API response object
   const actorItems = actors?.items || actors || [];
-  console.log(result, "Result in ActorCards");
+  // console.log(result, "Result in ActorCards");
   
   const handleClick = async(actor) => {
     console.log("Actor ID clicked:", actor.id);

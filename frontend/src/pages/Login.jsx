@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { axiosInstance } from '../api/axios.js'
+import { AuthContext } from '../context/AuthContext';
 import { useStore } from '../store/store.js';
+
 export default function LoginForm() {
-  const [apiKey, setApiKey] = useState('');
-  const {login} = useStore();
+  const { login } = useStore();
   const navigate = useNavigate();
-  const handleLogin =async (event) => {
+  const [apiToken, setApiToken] = useState('');
+  const { setAuthData } = useContext(AuthContext);
+
+  const handleLogin = async (event) => {
     event.preventDefault();
-    const response = await login(apiKey)
+    setAuthData({ apiToken });
+    sessionStorage.setItem('userapi', apiToken)
+    navigate('/home');
 
-    if (response.status !== 200) {
-      alert('Invalid API Key. Please try again.');
-      return;
-    }
-    
-    navigate('/home')
   };
-
 
 
   return (
@@ -37,8 +37,8 @@ export default function LoginForm() {
         <input
           type="text"
           id="apiKey"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
+          value={apiToken}
+          onChange={(e) => setApiToken(e.target.value)}
           placeholder="Enter your API Key"
           required
           className="w-full px-3 py-2 mb-6 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
