@@ -321,7 +321,7 @@ const ActorCards = ({ actors }) => {
                         <Play className="w-4 h-4 inline mr-1" />
                         {loading ? 'Loading...' : 'Run'}
                       </button>
-                      <button className="bg-indigo-800 hover:bg-indigo-700 disabled:bg-indigo-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center"
+{/*                       <button className="bg-indigo-800 hover:bg-indigo-700 disabled:bg-indigo-400 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center"
                       disabled={loading}
                       // onClick={}
                       >
@@ -329,7 +329,7 @@ const ActorCards = ({ actors }) => {
                         {loading ? 'Loading...' : 'View Runs'}
                           
                       
-                      </button>
+                      </button> */}
                     </div>
                   </div>
 
@@ -431,9 +431,9 @@ const ActorCards = ({ actors }) => {
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No actors found</h3>
             <p className="text-gray-500">Try adjusting your search or create a new actor to get started.</p>
-            <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+{/*             <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
               Create Actor
-            </button>
+            </button> */}
           </div>
         )}
       </div>
