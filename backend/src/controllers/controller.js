@@ -149,7 +149,7 @@ export const getActorSchema = async (req, res) => {
 
   try {
     const inputSchema = await axios.get(
-      `https://api.apify.com/v2/key-value-stores/2U05nMFEv8AnXSDCf/records/INPUT?token=apify_api_jVc7BX8RRyQ3qMdvGh2hVmFLCp5Qyg03Ur0H`
+      `https://api.apify.com/v2/key-value-stores/2U05nMFEv8AnXSDCf/records/INPUT?token=${process.env.APIFY_API_TOKEN}`
     );
 
     console.log("Input schema fetched successfully:", inputSchema);
@@ -207,32 +207,3 @@ export const getRuns = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-// export const getActorSchema = async (req, res) => {
-//   const { actorId } = req.params;
-//   try {
-//     // Try the direct schema endpoint
-//     const response = await fetch(`https://api.apify.com/v2/acts/${actorId}/input-schema`, {
-//       headers: {
-//         'Authorization': `Bearer ${process.env.APIFY_API_TOKEN}`
-//       }
-//     });
-
-//     if (response.ok) {
-//       const schema = await response.json();
-//       console.log("Actor schema:", JSON.stringify(schema, null, 2));
-//       res.status(200).json(schema);
-//     } else if (response.status === 404) {
-//       // No schema defined for this actor
-//       res.status(404).json({
-//         error: "No input schema defined for this actor",
-//         message: "Actor may still accept input, check documentation or use fallback"
-//       });
-//     } else {
-//       throw new Error(`API responded with status: ${response.status}`);
-//     }
-//   } catch (error) {
-//     console.error("Error fetching actor schema:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };

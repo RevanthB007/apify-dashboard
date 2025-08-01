@@ -6,7 +6,6 @@ export const axiosInstance = axios.create({
   timeout: 10000,
   headers:{ 
     "Content-Type": "application/json",
-    // 'Authorization': `Bearer apify_api_jVc7BX8RRyQ3qMdvGh2hVmFLCp5Qyg03Ur0H`
   },
   withCredentials: true,
 });
