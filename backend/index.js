@@ -4,7 +4,7 @@ import apifyRoutes from "./src/routes/route.js";
 import cors from "cors"; 
 dotenv.config();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const app = express()
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.json());
