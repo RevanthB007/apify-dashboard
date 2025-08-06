@@ -11,7 +11,8 @@ app.use(express.json());
 
 // Updated CORS configuration
 const allowedOrigins = [
-  'https://apify-dashboard-git-production-revanthb007s-projects.vercel.app',
+   'https://apify-dashboard-6cry25a87-revanthb007s-projects.vercel.app',
+    /.*\.vercel\.app$/, // Allow all Vercel subdomains
   'http://localhost:3000', // for local development
   'http://localhost:5173', // for Vite dev server
   // Add your custom domain here if you have one
