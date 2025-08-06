@@ -1,7 +1,9 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // Use full backend URL from env
+  baseURL:   import.meta.env.MODE === "development"
+    ? "http://localhost:3000/api" // your local backend URL
+    : import.meta.env.VITE_API_URL, // your deployed backend URL from Vercel env
   headers: {
     "Content-Type": "application/json",
   },
