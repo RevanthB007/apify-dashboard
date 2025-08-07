@@ -4,9 +4,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const useStore = create((set, get) => ({
-
   response: {},
-  latestResult:{},  
+  latestResult: {},
   loading: false,
   error: null,
   inputParams: {},
@@ -14,13 +13,13 @@ export const useStore = create((set, get) => ({
 
   login: async (apiKey) => {
     try {
-      const response = await axiosInstance.get("/login",{apiKey});
+      const response = await axiosInstance.get("/login", { apiKey });
     } catch (error) {
       console.log("Error during login:", error);
       toast.error("Invalid API Key");
     }
   },
-  
+
   fetchActors: async () => {
     set({ loading: true, error: null });
     try {
@@ -55,7 +54,7 @@ export const useStore = create((set, get) => ({
       );
       set({ loading: false }); // Set loading to false on success
       console.log("Actor run started successfully:", response.data); // Return the data for use in components
-    //   set({ result: [...get().results,response.data] });
+      //   set({ result: [...get().results,response.data] });
     } catch (error) {
       console.error("Error running actor:", error);
       const errorMessage =
@@ -67,19 +66,44 @@ export const useStore = create((set, get) => ({
     }
   },
 
+  // getLatestResult: async (actorId) => {
+  //   set({ loading: true, error: null });
+  //   try {
+  //     const response = await axiosInstance.get(`/runs/result/${actorId}`);
+  //     console.log("Run result fetched successfully:", response.data);
+  //     set({ loading: false, result: response.data.data , });
+  //   } catch (error) {
+  //     console.error("Error fetching run result:", error);
+  //     set({ loading: false, error: error.message });
+  //     toast.error("Failed to fetch run result");
+  //   }
+  // },
+
   getLatestResult: async (actorId) => {
     set({ loading: true, error: null });
     try {
       const response = await axiosInstance.get(`/runs/result/${actorId}`);
       console.log("Run result fetched successfully:", response.data);
-      set({ loading: false, result: response.data.data });
+
+      const scrapedData = response.data.scrapedData || null;
+      console.log("Scraped data:", scrapedData);
+      set({
+        loading: false,
+        result: response.data.data,
+        scrapedData: scrapedData,
+      });
     } catch (error) {
       console.error("Error fetching run result:", error);
-      set({ loading: false, error: error.message });
+      set({
+        loading: false,
+        error: error.message,
+        scrapedData: null,
+      });
       toast.error("Failed to fetch run result");
     }
   },
 
-    getRuns: async (actorId) => {
-    }
+
+  getRuns: async (actorId) => {},
+
 }));

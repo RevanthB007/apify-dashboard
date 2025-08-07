@@ -126,6 +126,24 @@ export const runActor = async (req, res) => {
   }
 };
 
+// export const getRunResult = async (req, res) => {
+//   const actorId = req.params.actorId;
+//   try {
+//     // Get the latest successful run using the /last endpoint
+//     const runResult = await axios.get(
+//       `https://api.apify.com/v2/acts/${actorId}/runs/last?token=${req.apifyToken}&status=SUCCEEDED`
+//     );
+
+//     console.log("Latest successful run fetched:", runResult.data);
+//     console.log("default dataset", runResult.data.data.defaultDatasetId);
+//     res.status(200).json(runResult.data);
+    
+//   } catch (error) {
+//     console.error("Error fetching latest successful run:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
 export const getRunResult = async (req, res) => {
   const actorId = req.params.actorId;
   try {
@@ -135,12 +153,44 @@ export const getRunResult = async (req, res) => {
     );
 
     console.log("Latest successful run fetched:", runResult.data);
-    res.status(200).json(runResult.data);
+    
+    // Extract the dataset ID from the run result (note the nested structure)
+    const defaultDatasetId = runResult.data.data.defaultDatasetId;
+    console.log("Default dataset ID:", defaultDatasetId);
+
+    // If dataset ID exists, fetch the scraped data
+    let scrapedData = null;
+    if (defaultDatasetId) {
+      try {
+        const datasetResponse = await axios.get(
+          `https://api.apify.com/v2/datasets/${defaultDatasetId}/items?token=${req.apifyToken}&format=json&clean=true`
+        );
+        
+        scrapedData = datasetResponse.data;
+        console.log("Scraped data retrieved successfully:");
+        console.log(`- Total items: ${scrapedData.length}`);
+        console.log("- Sample data (first item):", scrapedData[0] || "No items found");
+        
+      } catch (datasetError) {
+        console.error("Error fetching dataset items:", datasetError);
+        // Don't fail the entire request if dataset fetch fails
+        scrapedData = { error: "Failed to fetch dataset items" };
+      }
+    } else {
+      console.log("No dataset ID found in run result");
+    }
+    runResult.data.scrapedData = scrapedData[0]; // Attach scraped data to the run result
+    // Return both run info and scraped data
+    res.status(200).json(
+      runResult.data
+    );
+
   } catch (error) {
     console.error("Error fetching latest successful run:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 export const getActorSchema = async (req, res) => {
   const actorId = req.params.actorId;
