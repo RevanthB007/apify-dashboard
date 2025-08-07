@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { X, Plus, Trash2, Settings, Globe, Code, Download } from 'lucide-react';
 import { useStore } from '../store/store.js';
-const ActorInputForm = ({ isOpen, onClose, inputParams, actorName, actorId }) => {
+const ActorInputForm = ({ isOpen, onClose, inputParams, actorName , actorId}) => {
   // Initialize form data with exact structure matching the API response
-  const { runActor } = useStore();
+   const {runActor} = useStore();
   const [formData, setFormData] = useState(() => {
     if (!inputParams) return {};
-
+    
     return {
       ...inputParams,
       // Ensure arrays are properly initialized
@@ -50,49 +50,23 @@ const ActorInputForm = ({ isOpen, onClose, inputParams, actorName, actorId }) =>
     }));
   };
 
-  // const handleSubmit =async () => {
-  //   console.log('=== CRAWLER CONFIGURATION ===');
-  //   console.log('Actor Name:', actorName);
-  //   console.log('Original Input Params:', JSON.stringify(inputParams, null, 2));
-  //   console.log('Modified Form Data:', JSON.stringify(formData, null, 2));
-  //   console.log('=== END CONFIGURATION ===');
-
-  //   // Validate that the structure matches expected format
-  //   const requiredFields = ['startUrls'];
-  //   const missingFields = requiredFields.filter(field => !formData[field]);
-  //   if (missingFields.length > 0) {
-  //     console.warn('Missing required fields:', missingFields);
-  //   }
-
-  //   await runActor(actorId, formData); console.log('Actor run initiated with data:', formData);
-
-  //   onClose();
-  // };
-  const handleSubmit = async () => {
+  const handleSubmit =async () => {
     console.log('=== CRAWLER CONFIGURATION ===');
     console.log('Actor Name:', actorName);
     console.log('Original Input Params:', JSON.stringify(inputParams, null, 2));
     console.log('Modified Form Data:', JSON.stringify(formData, null, 2));
     console.log('=== END CONFIGURATION ===');
-
+    
     // Validate that the structure matches expected format
     const requiredFields = ['startUrls'];
     const missingFields = requiredFields.filter(field => !formData[field]);
     if (missingFields.length > 0) {
       console.warn('Missing required fields:', missingFields);
     }
-
-    // Show "task running" toast and close form immediately
-    toast.info("Task running...");
+    
+    await runActor(actorId, formData); console.log('Actor run initiated with data:', formData);
+    
     onClose();
-
-    // Run actor in background
-    try {
-      await runActor(actorId, formData);
-      console.log('Actor run initiated with data:', formData);
-    } catch (error) {
-      console.error('Error running actor:', error);
-    }
   };
 
   const tabs = [
@@ -122,10 +96,11 @@ const ActorInputForm = ({ isOpen, onClose, inputParams, actorName, actorId }) =>
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 border-b-2 font-medium text-sm flex items-center space-x-2 ${activeTab === tab.id
+                  className={`py-4 border-b-2 font-medium text-sm flex items-center space-x-2 ${
+                    activeTab === tab.id
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700'
-                    }`}
+                  }`}
                 >
                   <Icon className="w-4 h-4" />
                   <span>{tab.label}</span>
@@ -348,9 +323,9 @@ const ActorInputForm = ({ isOpen, onClose, inputParams, actorName, actorId }) =>
                   <input
                     type="checkbox"
                     checked={formData.proxyConfiguration?.useApifyProxy || false}
-                    onChange={(e) => handleInputChange('proxyConfiguration', {
-                      ...formData.proxyConfiguration,
-                      useApifyProxy: e.target.checked
+                    onChange={(e) => handleInputChange('proxyConfiguration', { 
+                      ...formData.proxyConfiguration, 
+                      useApifyProxy: e.target.checked 
                     })}
                     className="mr-2"
                   />
